@@ -8,7 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^imageTapBlock)(NSString *imageUrl, NSString *responseUrl);
+@class HppBannerView;
+@protocol HppBannerViewDelegate <NSObject>
+
+- (void)bannerView:(HppBannerView *)bannerView didSelecteImageAtIndex:(NSInteger)index;
+
+@end
+typedef void(^imageTapBlock)(NSString *imageUrl, NSInteger index);
 
 @interface HppBannerModel : NSObject
 @property (strong, nonatomic) NSString *imageString;
@@ -17,5 +23,5 @@ typedef void(^imageTapBlock)(NSString *imageUrl, NSString *responseUrl);
 
 @interface HppBannerView : UIView
 @property (strong, nonatomic) NSArray <HppBannerModel *> *dataArray;
-@property (copy, nonatomic) imageTapBlock tapBlock;
+@property (weak, nonatomic) id <HppBannerViewDelegate> delegate;
 @end

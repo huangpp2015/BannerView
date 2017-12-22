@@ -19,90 +19,101 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
+    
     if (self) {
-        self.scrollView = [[UIScrollView alloc] init];
-        self.scrollView.backgroundColor = [UIColor orangeColor];
-        self.scrollView.frame = CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame));
-        self.scrollView.delegate = self;
         [self addSubview:self.scrollView];
-        
-        self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 0, 60, 35)];
-        self.pageControl.currentPageIndicatorTintColor = [UIColor orangeColor];
-        self.pageControl.pageIndicatorTintColor = [UIColor grayColor];
         [self addSubview:self.pageControl];
     }
     
     return self;
 }
 
+- (UIScrollView *)scrollView {
+    if (_scrollView == nil) {
+        _scrollView = [[UIScrollView alloc] init];
+        _scrollView.frame = self.bounds;
+        _scrollView.showsHorizontalScrollIndicator = NO;
+        _scrollView.delegate = self;
+    }
+    return _scrollView;
+}
+
+- (UIPageControl *)pageControl {
+    if (_pageControl == nil) {
+        _pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, 0, 60, 35)];
+        
+//      设置tintColor
+        _pageControl.currentPageIndicatorTintColor = [UIColor orangeColor];
+        _pageControl.pageIndicatorTintColor = [UIColor grayColor];
+    }
+    return _pageControl;
+}
+
+
 - (void)setDataArray:(NSArray *)dataArray {
-    _dataArray = dataArray;
-    for (UIView *view in self.scrollView.subviews) {
+    
+    if (_dataArray != dataArray) {
+        _dataArray = dataArray;
+    }
+    
+    NSArray *subviews = self.scrollView.subviews;
+    for (UIView *view in subviews) {
         [view removeFromSuperview];
     }
     
     [_timer invalidate];
     _timer = nil;
     
-    if (dataArray.count == 0) {
+    if (_dataArray.count == 0) {
         return;
         
-    } else if (dataArray.count == 1) {
+    } else if (_dataArray.count == 1) {
         _scrollView.scrollEnabled = NO;
         _scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds));
         _scrollView.contentOffset = CGPointMake(0, 0);
         _pageControl.hidden = YES;
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = self.bounds;
-        button.tag = 1000;
-        [button sd_setBackgroundImageWithURL:[NSURL URLWithString:_dataArray.firstObject.imageString] forState:UIControlStateNormal];
-        [button addTarget:self action:@selector(adTapAction:) forControlEvents:UIControlEventTouchUpInside];
-        [_scrollView addSubview:button];
         
     } else {
         _scrollView.scrollEnabled = YES;
         _scrollView.contentSize = CGSizeMake((dataArray.count + 2) * CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
         _scrollView.contentOffset = CGPointMake(CGRectGetWidth(self.bounds), 0);
-        _scrollView.showsHorizontalScrollIndicator = NO;
         _scrollView.pagingEnabled = YES;
-        _scrollView.delegate = self;
+        
         _pageControl.enabled = NO;
         _pageControl.hidden = NO;
         _pageControl.numberOfPages = dataArray.count;
         _pageControl.currentPage = 0;
-        [self setContent];
-        
+        [self addTimer];
     }
+    [self setContent];
+
 }
 - (void)setContent {
+    NSInteger dataCount = _dataArray.count == 1 ? 1 : (_dataArray.count + 2);
     
-    for (int i = 0; i < _dataArray.count + 2; i ++) {
-        
+    for (int i = 0; i < dataCount; i ++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.tag = i + 1000;
         HppBannerModel *model;
+        
         if (i == 0) {
             model = _dataArray.lastObject;
-            button.frame = CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+            button.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds));
             
         }else if(i == _dataArray.count + 1){
             model = _dataArray.firstObject;
             button.frame = CGRectMake(CGRectGetWidth(self.frame) *(_dataArray.count + 1), 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
-            button.tag = i + 1000;
             
         }else{
             model = _dataArray[i - 1];
             button.frame = CGRectMake(CGRectGetWidth(self.frame) * i, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
-            button.tag = i + 1000;
         }
-        button.backgroundColor = [UIColor grayColor];
         [button sd_setBackgroundImageWithURL:[NSURL URLWithString:model.imageString] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(adTapAction:) forControlEvents:UIControlEventTouchUpInside];
         [_scrollView addSubview:button];
         
     }
     
-    [self addTimer];
     [self.pageControl sizeToFit];
 
 }
@@ -159,8 +170,9 @@
         model = _dataArray[index - 1];
     }
     
-    if (self.tapBlock) {
-        self.tapBlock(model.imageString, model.pageUrl);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(bannerView:didSelecteImageAtIndex:)]) {
+        __weak typeof(self) weakSelf = self;
+        [self.delegate bannerView:weakSelf didSelecteImageAtIndex:[_dataArray indexOfObject:model]];
     } else return;
     
 }
