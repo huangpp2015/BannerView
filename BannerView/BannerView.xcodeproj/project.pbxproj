@@ -111,12 +111,11 @@
 		8F0197A41FEB5FD30009FADB /* BannerView */ = {
 			isa = PBXGroup;
 			children = (
+				8F2C693F203EC1DA004927CF /* BannerView */,
 				8F0197A51FEB5FD30009FADB /* AppDelegate.h */,
 				8F0197A61FEB5FD30009FADB /* AppDelegate.m */,
 				8F0197A81FEB5FD30009FADB /* ViewController.h */,
 				8F0197A91FEB5FD30009FADB /* ViewController.m */,
-				8F0197D71FEB60060009FADB /* HppBannerView.h */,
-				8F0197D81FEB60060009FADB /* HppBannerView.m */,
 				8F0197AB1FEB5FD30009FADB /* Main.storyboard */,
 				8F0197AE1FEB5FD30009FADB /* Assets.xcassets */,
 				8F0197B01FEB5FD30009FADB /* LaunchScreen.storyboard */,
@@ -142,6 +141,15 @@
 				8F0197CB1FEB5FD30009FADB /* Info.plist */,
 			);
 			path = BannerViewUITests;
+			sourceTree = "<group>";
+		};
+		8F2C693F203EC1DA004927CF /* BannerView */ = {
+			isa = PBXGroup;
+			children = (
+				8F0197D71FEB60060009FADB /* HppBannerView.h */,
+				8F0197D81FEB60060009FADB /* HppBannerView.m */,
+			);
+			path = BannerView;
 			sourceTree = "<group>";
 		};
 		A8C6A2E036BA3D6582339F61 /* Pods */ = {

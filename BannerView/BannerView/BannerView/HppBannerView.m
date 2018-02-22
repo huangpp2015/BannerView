@@ -19,19 +19,31 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    
     if (self) {
-        [self addSubview:self.scrollView];
-        [self addSubview:self.pageControl];
+        [self setUpUI];
+        self.scrollView.frame = self.bounds;
     }
-    
     return self;
+}
+
+- (instancetype)init {
+    self = [self initWithFrame:CGRectZero];
+    return self;
+}
+
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    self.scrollView.frame = self.bounds;
+}
+
+- (void)setUpUI {
+    [self addSubview:self.scrollView];
+    [self addSubview:self.pageControl];
 }
 
 - (UIScrollView *)scrollView {
     if (_scrollView == nil) {
         _scrollView = [[UIScrollView alloc] init];
-        _scrollView.frame = self.bounds;
         _scrollView.showsHorizontalScrollIndicator = NO;
         _scrollView.delegate = self;
     }

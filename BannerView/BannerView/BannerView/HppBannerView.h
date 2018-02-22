@@ -10,11 +10,10 @@
 
 @class HppBannerView;
 @protocol HppBannerViewDelegate <NSObject>
-
+@optional
 - (void)bannerView:(HppBannerView *)bannerView didSelecteImageAtIndex:(NSInteger)index;
 
 @end
-typedef void(^imageTapBlock)(NSString *imageUrl, NSInteger index);
 
 @interface HppBannerModel : NSObject
 @property (strong, nonatomic) NSString *imageString;
