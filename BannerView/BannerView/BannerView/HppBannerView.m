@@ -80,21 +80,21 @@
         return;
         
     } else if (_dataArray.count == 1) {
-        _scrollView.scrollEnabled = NO;
-        _scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds));
-        _scrollView.contentOffset = CGPointMake(0, 0);
-        _pageControl.hidden = YES;
+        self.scrollView.scrollEnabled = NO;
+        self.scrollView.contentSize = CGSizeMake(CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds));
+        self.scrollView.contentOffset = CGPointMake(0, 0);
+        self.pageControl.hidden = YES;
         
     } else {
-        _scrollView.scrollEnabled = YES;
-        _scrollView.contentSize = CGSizeMake((dataArray.count + 2) * CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
-        _scrollView.contentOffset = CGPointMake(CGRectGetWidth(self.bounds), 0);
-        _scrollView.pagingEnabled = YES;
+        self.scrollView.scrollEnabled = YES;
+        self.scrollView.contentSize = CGSizeMake((dataArray.count + 2) * CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
+        self.scrollView.contentOffset = CGPointMake(CGRectGetWidth(self.bounds), 0);
+        self.scrollView.pagingEnabled = YES;
         
-        _pageControl.enabled = NO;
-        _pageControl.hidden = NO;
-        _pageControl.numberOfPages = dataArray.count;
-        _pageControl.currentPage = 0;
+        self.pageControl.enabled = NO;
+        self.pageControl.hidden = NO;
+        self.pageControl.numberOfPages = dataArray.count;
+        self.pageControl.currentPage = 0;
         [self addTimer];
     }
     [self setContent];
@@ -121,7 +121,7 @@
             button.frame = CGRectMake(CGRectGetWidth(self.frame) * i, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame));
         }
         [button sd_setBackgroundImageWithURL:[NSURL URLWithString:model.imageString] forState:UIControlStateNormal];
-        [button addTarget:self action:@selector(adTapAction:) forControlEvents:UIControlEventTouchUpInside];
+        [button addTarget:self action:@selector(addTapAction:) forControlEvents:UIControlEventTouchUpInside];
         [_scrollView addSubview:button];
         
     }
@@ -169,7 +169,7 @@
 
 
 
-- (void)adTapAction:(UIButton *)sender {
+- (void)addTapAction:(UIButton *)sender {
     NSInteger index = sender.tag - 1000;
     HppBannerModel *model;
     if (index == 0) {
@@ -184,7 +184,7 @@
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(bannerView:didSelecteImageAtIndex:)]) {
         __weak typeof(self) weakSelf = self;
-        [self.delegate bannerView:weakSelf didSelecteImageAtIndex:[_dataArray indexOfObject:model]];
+        [self.delegate bannerView:weakSelf didSelecteImageAtIndex:[weakSelf.dataArray indexOfObject:model]];
     } else return;
     
 }
